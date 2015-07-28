@@ -1,11 +1,11 @@
 # Abide Extensions
 
-The **abide** framework was build to be easily extensible, and not only with respect to [rule addition](/wiki/rules.md). One can also extend two other key features of the framework, however doing so is slightly more involved as rule contribution.
+The **abide** framework was built to be easily extensible, and not only with respect to [rule addition](/wiki/rules.md). One can also extend two other key features of the framework, however doing so is slightly more involved than rule contribution.
 
 ### Adding new directives
 
-Directives are simply traits that will be mixed in to the rule context at rule instantiation. By default, a simple
-`Context` value will be used, but this behavior can be overriden by defining a companion object to the rule that
+Directives are traits that will be mixed in to the rule context at rule instantiation. By default, a simple
+`Context` value will be used, but this behavior can be overridden by defining a companion object to the rule that
 extends the `ContextGenerator` trait. These generators will instantiate the correct context for the companion rule and the **abide** compiler plugin will generalise the context in order to share cache.
 
 Concretely, given a generator that creates `Context` typed contexts and another that generates `C <: Context`, all rules will share the context instance with type `C` since it generalises `Context`. This enables cache sharing without requiring knowledge of existing rules and context types.
@@ -14,11 +14,11 @@ To bind the the type `C <: Context` to the rule that will be consuming this cont
 ```scala
 object SomeRule extends ContextGenerator {
   // C is typically a mixin of Context and some other stuff
-  def getContext(universe : SymbolTable) : C = new C
+  def getContext(universe: SymbolTable) : C = new C
 }
 
-class SomeRule(val context : C) extends Rule { ... }
-````
+class SomeRule(val context: C) extends Rule { ... }
+```
 and the **abide** compiler plugin will automatically share the `C` typed context between all rules for which it remains
 valid.
 

@@ -126,7 +126,7 @@ class AbidePlugin(val global: Global) extends Plugin {
       case (generator, rulePairs) =>
         val rules = rulePairs.map(_._1)
         (filter: Rule => Boolean) => {
-          val analyzer = generator.getAnalyzer(global, rules.filter(filter))
+          val analyzer = generator.apply(global, rules.filter(filter))
           analyzer.asInstanceOf[Analyzer { val global: AbidePlugin.this.global.type }]
         }
     }

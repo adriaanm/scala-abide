@@ -24,8 +24,10 @@ trait Rule {
 
   /**
    * Pointer to the [[AnalyzerGenerator]] object necessary to apply this rule.
+   *
+   * TODO: get rid of this coupling? It seems like the rule shouldn't need to know which anala
    */
-  val analyzer: AnalyzerGenerator
+  def analyzer: AnalyzerGenerator
 
   /**
    * Base trait for the state that each rule will work on during application.
@@ -48,7 +50,7 @@ trait Rule {
   /**
    * Base trait for warnings each rule will emit.
    *
-   * Using a common subclass makes it simpler to uniformely handle warnings, but we want a specific
+   * Using a common subclass makes it simpler to uniformly handle warnings, but we want a specific
    * type for each rule to tailor specific warnings for specific use-cases (eg. need info about
    * multiple trees to generate warning msg)
    *
@@ -56,13 +58,11 @@ trait Rule {
    * warning consumers (like position and message).
    * @see [[scala.tools.abide.Warning]]
    */
-  trait RuleWarning extends scala.tools.abide.Warning {
-    val rule: Rule = Rule.this
-  }
+  trait RuleWarning extends scala.tools.abide.Warning
 
   /** The warning type we're dealing with in this rule. @see [[RuleWarning]] */
   type Warning <: RuleWarning
 
   /** We require a name field to manage rules (enable/disable) and pretty-print them */
-  val name: String
+  def name: String
 }

@@ -1,7 +1,5 @@
 package scala.tools.abide.traversal
 
-import scala.reflect.internal.traversal._
-
 /**
  * ExistentialRule
  *
@@ -16,8 +14,6 @@ import scala.reflect.internal.traversal._
  * regardless of how many noks have taken place before/after.
  */
 trait ExistentialRule extends TraversalRule {
-  import context.universe._
-
   /** Warning key type that uniquely defines the source of a warning */
   type Key
 

@@ -74,7 +74,7 @@ class ErroneousRuleTest extends AbideTest {
     }
   }
 
-  val traverser = FusingTraversalAnalyzerGenerator.getAnalyzer(global, List(warningRule, failingRule))
+  val traverser = FusingTraversalAnalyzerGenerator(global, List(warningRule, failingRule))
 
   "Rule failure" should "be isolated in AddressBook.scala" in {
     val tree = fromFile("traversal/AddressBook.scala")

@@ -15,7 +15,7 @@ import scala.reflect.internal.traversal._
  * traversal by using the `transform` method from the `Traversal` class. Typically, one will
  * provide a few helper methods in intermediate [[TraversalRule]] subclasses to make rule
  * definitions clearer (see [[ExistentialRule]] for example). State will only be consumed once
- * the traversal has terminated, so although partial states can allways be accessed, these aren't
+ * the traversal has terminated, so although partial states can always be accessed, these aren't
  * necessarily meaningful (eg. in [[ExistentialRule]], issues can be invalidated after they were
  * discovered and warnings can therefore only be collected after a full traversal).
  *
@@ -36,5 +36,5 @@ import scala.reflect.internal.traversal._
 trait TraversalRule extends OptimizingTraversal with Rule {
   val universe: context.universe.type = context.universe
 
-  val analyzer = NaiveTraversalAnalyzerGenerator
+  def analyzer = NaiveTraversalAnalyzerGenerator
 }

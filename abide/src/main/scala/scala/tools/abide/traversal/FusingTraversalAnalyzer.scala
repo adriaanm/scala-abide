@@ -18,14 +18,14 @@ import scala.reflect.internal.util.NoPosition
  * @see [[FusingTraversalAnalyzer]]
  */
 object FusingTraversalAnalyzerGenerator extends AnalyzerGenerator {
-  def getAnalyzer(global: Global, rules: List[Rule]): FusingTraversalAnalyzer = {
-    val traversalRules = rules.flatMap(_ match {
+  def apply(global: Global, rules: List[Rule]): FusingTraversalAnalyzer = {
+    val traversalRules = rules.flatMap {
       case t: TraversalRule =>
         Some(t)
       case rule =>
         global.reporter.warning(NoPosition, "Skipping unexpected rule type for TraversalAnalyzer : " + rule.getClass)
         None
-    })
+    }
 
     new FusingTraversalAnalyzer(global, traversalRules)
   }
@@ -53,9 +53,7 @@ class FusingTraversalAnalyzer(val global: Global, rules: List[TraversalRule]) ex
     case Some(traverser) =>
       traverser.traverse(tree)
       rules.flatMap { rule =>
-        try {
-          rule.result.warnings
-        }
+        try rule.result.warnings
         catch {
           case t: rule.TraversalError =>
             global.warning(t.pos, t.message)

@@ -15,7 +15,7 @@ import scala.reflect.internal.util.NoPosition
  * @see [[NaiveTraversalAnalyzer]]
  */
 object NaiveTraversalAnalyzerGenerator extends AnalyzerGenerator {
-  def getAnalyzer(global: Global, rules: List[Rule]): NaiveTraversalAnalyzer = {
+  def apply(global: Global, rules: List[Rule]): NaiveTraversalAnalyzer = {
     val traversalRules = rules.flatMap(_ match {
       case t: TraversalRule =>
         Some(t)

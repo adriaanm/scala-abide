@@ -19,20 +19,20 @@ import scala.tools.nsc._
 trait AnalyzerGenerator {
 
   /**
-   * Buils a new [[Analyzer]] instance based on a compiler (scala.reflect.internal.SymbolTable), and
+   * Builds a new [[Analyzer]] instance based on a compiler (scala.reflect.internal.SymbolTable), and
    * a list of rules. The [[Analyzer thus generated will then apply these rules to provided trees.
    */
-  def getAnalyzer(global: Global, rules: List[Rule]): Analyzer
+  def apply(global: Global, rules: List[Rule]): Analyzer
 
   /**
    * Subsumption mechanism that enables optimized or generalized analyzers to replace simpler ones.
-   * In order to subsume (ie. replace) a given analyzer, simply add it's generator to the subsumption set.
+   * In order to subsume (ie. replace) a given analyzer, simply add its generator to the subsumption set.
    */
   def subsumes: Set[AnalyzerGenerator]
 }
 
 /**
- * Supertrait for [[Rule]] application classes.
+ * Supertrait for classes that apply [[Rule]]s.
  *
  * In many cases, rules can be grouped together in a logical way to optimize tree traversal, or keep the
  * traversal logic outside of the rules. This logic should be contained inside the [[Analyzer]] class
