@@ -107,37 +107,11 @@ class AbidePlugin(val global: Global) extends Plugin {
     constructorMirror(context).asInstanceOf[Rule { val context: Context { val universe: AbidePlugin.this.global.type } }]
   }
 
-  private lazy val analyzers: List[(Rule => Boolean) => Analyzer { val global: AbidePlugin.this.global.type }] = {
-    def generalize(g1: AnalyzerGenerator, g2: AnalyzerGenerator): AnalyzerGenerator = {
-      def fix[A](a: A)(f: A => A): A = { val na = f(a); if (na == a) na else fix(na)(f) }
-      val g2Subsumes: Set[AnalyzerGenerator] = fix(g2.subsumes)(set => set ++ set.flatMap(_.subsumes))
-      if (g2Subsumes(g1)) g2 else g1
-    }
-
-    val allGenerators: List[(Rule, AnalyzerGenerator)] = rules.map(rule => rule -> rule.analyzer)
-    val ruleToGenerator = allGenerators.foldLeft(List.empty[(Rule, AnalyzerGenerator)]) {
-      case (list, (rule, generator)) =>
-        val generalized = analyzerGenerators.foldLeft(generator)((acc, gen) => generalize(gen, acc))
-        val bottomGen = list.foldLeft(generalized) { case (acc, (rule, generator)) => generalize(generator, acc) }
-        (rule -> bottomGen) :: (list map { case (rule, gen) => rule -> generalize(gen, bottomGen) })
-    }
-
-    ruleToGenerator.groupBy(_._2).toList.map {
-      case (generator, rulePairs) =>
-        val rules = rulePairs.map(_._1)
-        (filter: Rule => Boolean) => {
-          val analyzer = generator.apply(global, rules.filter(filter))
-          analyzer.asInstanceOf[Analyzer { val global: AbidePlugin.this.global.type }]
-        }
-    }
+  private lazy val analyzers: List[Analyzer{ val global: AbidePlugin.this.global.type }] = {
+    analyzerGenerators.flatMap(_.apply(global)(rules))
   }
 
-  private lazy val presenters = {
-    presenterGenerators.map { generator =>
-      val presenter = generator.getPresenter(global)
-      presenter.asInstanceOf[Presenter { val global: AbidePlugin.this.global.type }]
-    }
-  }
+  private lazy val presenters = presenterGenerators.map(_.apply(global))
 
   private[abide] object component extends {
     val global: AbidePlugin.this.global.type = AbidePlugin.this.global
@@ -149,11 +123,8 @@ class AbidePlugin(val global: Global) extends Plugin {
       override def name = AbidePlugin.this.name
 
       def apply(unit: CompilationUnit): Unit = {
-        val warnings = analyzers.flatMap {
-          gen => gen(_ => true)(unit.body)
-        }
-
-        presenters.foreach(_.apply(unit, warnings))
+        val report = analyzers.flatMap(_.apply(unit.body))
+        presenters.foreach(_.apply(unit, report))
       }
     }
   }

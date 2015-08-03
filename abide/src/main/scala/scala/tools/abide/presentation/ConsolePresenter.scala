@@ -9,9 +9,7 @@ import scala.tools.abide._
  * @see [[ConsolePresenter]]
  */
 object ConsolePresenterGenerator extends PresenterGenerator {
-  def getPresenter(global: Global): ConsolePresenter = {
-    new ConsolePresenter(global)
-  }
+  def apply(_global: Global) = new ConsolePresenter { val global: _global.type = _global }
 }
 
 /**
@@ -19,7 +17,7 @@ object ConsolePresenterGenerator extends PresenterGenerator {
  *
  * Simple [[Presenter]] that outputs warnings as compiler warnings
  */
-class ConsolePresenter(protected val global: Global) extends Presenter {
+abstract class ConsolePresenter extends Presenter {
   import global._
 
   /** Outputs Abide warnings as compiler warnings */

@@ -17,7 +17,7 @@ trait PresenterGenerator {
   /**
    * Buils a new [[Presenter]]
    */
-  def getPresenter(global: Global): Presenter
+  def apply(_global: Global): Presenter{val global: _global.type}
 
 }
 
@@ -31,7 +31,7 @@ trait PresenterGenerator {
  * @see [[ConsolePresenter]] for a concrete example
  */
 trait Presenter {
-  protected val global: Global
+  val global: Global
   import global._
 
   /** Generate output from warnings produced by Abide analysis */

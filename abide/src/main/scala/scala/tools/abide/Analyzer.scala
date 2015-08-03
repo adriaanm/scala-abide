@@ -22,7 +22,7 @@ trait AnalyzerGenerator {
    * Builds a new [[Analyzer]] instance based on a compiler (scala.reflect.internal.SymbolTable), and
    * a list of rules. The [[Analyzer thus generated will then apply these rules to provided trees.
    */
-  def apply(global: Global, rules: List[Rule]): Analyzer
+  def apply(_global: Global)(rules: List[Rule]): List[Analyzer{val global: _global.type}]
 
   /**
    * Subsumption mechanism that enables optimized or generalized analyzers to replace simpler ones.
@@ -42,7 +42,7 @@ trait AnalyzerGenerator {
  * @see [[AnalyzerGenerator]]
  */
 trait Analyzer {
-  protected val global: Global
+  val global: Global
   import global._
 
   /** Applies the rules contained in this [[Analyzer]] to the provided tree and return a list of new warnings. */

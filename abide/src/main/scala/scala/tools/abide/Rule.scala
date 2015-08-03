@@ -23,13 +23,6 @@ trait Rule {
   val context: Context
 
   /**
-   * Pointer to the [[AnalyzerGenerator]] object necessary to apply this rule.
-   *
-   * TODO: get rid of this coupling? It seems like the rule shouldn't need to know which anala
-   */
-  def analyzer: AnalyzerGenerator
-
-  /**
    * Base trait for the state that each rule will work on during application.
    *
    * At any given time, a rule state must be able to produce a list of warnings. Typically,

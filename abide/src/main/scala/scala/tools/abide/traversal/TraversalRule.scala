@@ -35,6 +35,4 @@ import scala.reflect.internal.traversal._
  */
 trait TraversalRule extends OptimizingTraversal with Rule {
   val universe: context.universe.type = context.universe
-
-  def analyzer = NaiveTraversalAnalyzerGenerator
 }
